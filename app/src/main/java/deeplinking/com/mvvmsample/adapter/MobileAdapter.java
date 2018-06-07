@@ -1,28 +1,20 @@
 package deeplinking.com.mvvmsample.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 
 import deeplinking.com.mvvmsample.R;
-import deeplinking.com.mvvmsample.app.Prefs;
-import deeplinking.com.mvvmsample.model.Book;
+import deeplinking.com.mvvmsample.model.Mobiles;
 import deeplinking.com.mvvmsample.realm.RealmController;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
-public class BooksAdapter extends RealmRecyclerViewAdapter<Book> {
+public class BooksAdapter extends RealmRecyclerViewAdapter<Mobiles> {
 
     final Context context;
     private Realm realm;
@@ -37,7 +29,7 @@ public class BooksAdapter extends RealmRecyclerViewAdapter<Book> {
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // inflate a new card view
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_books, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mobile, parent, false);
         return new CardViewHolder(view);
     }
 
@@ -48,26 +40,33 @@ public class BooksAdapter extends RealmRecyclerViewAdapter<Book> {
         realm = RealmController.getInstance().getRealm();
 
         // get the article
-        final Book book = getItem(position);
+        final Mobiles book = getItem(position);
         // cast the generic view holder to our specific one
         final CardViewHolder holder = (CardViewHolder) viewHolder;
 
         // set the title and the snippet
-        holder.textTitle.setText(book.getTitle());
-        holder.textAuthor.setText(book.getAuthor());
-        holder.textDescription.setText(book.getDescription());
+        holder.txt_name_model.setText(book.getName()+" "+book.getModel());
+
+       holder.txt_color.setText(book.getColor());
+       holder.txt_cost.setText(book.getPrice());
+       holder.txt_battery.setText(book.getBattery());
+       holder.txt_primary_camera.setText(book.getPrimary_camera());
+       holder.txt_second_camera.setText(book.getSecondry_camera());
+       holder.txt_memory.setText(book.getMemory());
+
+        Log.e("book name is ","<><><"+book.getName());
 
         // load the background image
-        if (book.getImageUrl() != null) {
+        /*if (book.getImageUrl() != null) {
             Glide.with(context)
                     .load(book.getImageUrl().replace("https", "http"))
                     .asBitmap()
                     .fitCenter()
                     .into(holder.imageBackground);
-        }
+        }*/
 
         //remove single match from realm
-        holder.card.setOnLongClickListener(new View.OnLongClickListener() {
+        /*holder.card.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 
@@ -140,7 +139,7 @@ public class BooksAdapter extends RealmRecyclerViewAdapter<Book> {
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
-        });
+        });*/
     }
 
     // return the size of your data set (invoked by the layout manager)
@@ -155,20 +154,26 @@ public class BooksAdapter extends RealmRecyclerViewAdapter<Book> {
     public static class CardViewHolder extends RecyclerView.ViewHolder {
 
         public CardView card;
-        public TextView textTitle;
-        public TextView textAuthor;
-        public TextView textDescription;
-        public ImageView imageBackground;
+        public TextView txt_name_model;
+        public TextView txt_color;
+        public TextView txt_cost;
+        public TextView txt_battery;
+        public TextView txt_primary_camera;
+        public TextView txt_second_camera;
+        public TextView txt_memory;
 
         public CardViewHolder(View itemView) {
             // standard view holder pattern with Butterknife view injection
             super(itemView);
 
             card = (CardView) itemView.findViewById(R.id.card_books);
-            textTitle = (TextView) itemView.findViewById(R.id.text_books_title);
-            textAuthor = (TextView) itemView.findViewById(R.id.text_books_author);
-            textDescription = (TextView) itemView.findViewById(R.id.text_books_description);
-            imageBackground = (ImageView) itemView.findViewById(R.id.image_background);
+            txt_name_model = (TextView) itemView.findViewById(R.id.txt_name_model);
+            txt_color = (TextView) itemView.findViewById(R.id.txt_color);
+            txt_cost = (TextView) itemView.findViewById(R.id.txt_cost);
+            txt_battery = (TextView) itemView.findViewById(R.id.txt_battery);
+            txt_primary_camera = (TextView) itemView.findViewById(R.id.txt_primary_camera);
+            txt_second_camera = (TextView) itemView.findViewById(R.id.txt_second_camera);
+            txt_memory = (TextView) itemView.findViewById(R.id.txt_memory);
         }
     }
 }
