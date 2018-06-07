@@ -9,6 +9,11 @@ import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 
+/**
+ * Created by Rajesh Kumar on 07-06-2018.
+ */
+
+
 public class RealmModelAdapter<T extends RealmObject> extends RealmBaseAdapter<T> {
 
     public RealmModelAdapter(Context context, RealmResults<T> realmResults, boolean automaticUpdate) {

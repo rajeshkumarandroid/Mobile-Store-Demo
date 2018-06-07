@@ -13,6 +13,11 @@ import deeplinking.com.mvvmsample.adapter.NewsRecyclerAdapter;
 import deeplinking.com.mvvmsample.databinding.ActivityMain1Binding;
 import deeplinking.com.mvvmsample.viewmodel.NewsModel;
 
+/**
+ * Created by Rajesh Kumar on 07-06-2018.
+ */
+
+
 public class MainActivity1 extends AppCompatActivity {
 
     ActivityMain1Binding binding;

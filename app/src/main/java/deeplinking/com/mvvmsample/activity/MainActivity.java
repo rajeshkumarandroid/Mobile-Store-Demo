@@ -7,27 +7,29 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
-
 import deeplinking.com.mvvmsample.R;
-import deeplinking.com.mvvmsample.adapter.BooksAdapter;
+import deeplinking.com.mvvmsample.adapter.MobileAdapter;
 import deeplinking.com.mvvmsample.adapter.RealmBooksAdapter;
 import deeplinking.com.mvvmsample.app.Prefs;
-import deeplinking.com.mvvmsample.model.Book;
+import deeplinking.com.mvvmsample.model.Mobiles;
 import deeplinking.com.mvvmsample.realm.RealmController;
+import deeplinking.com.mvvmsample.viewmodel.MobileModel;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * Created by Rajesh Kumar on 07-06-2018.
+ */
+
+
 public class MainActivity extends AppCompatActivity {
 
-    private BooksAdapter adapter;
+    private MobileAdapter adapter;
     private Realm realm;
     private LayoutInflater inflater;
     private FloatingActionButton fab;
@@ -38,30 +40,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        recycler = (RecyclerView) findViewById(R.id.recycler);
+        fab = findViewById(R.id.fab);
+        recycler = findViewById(R.id.recycler);
 
         //get realm instance
         this.realm = RealmController.with(this).getRealm();
 
-        //set toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         setupRecycler();
-
+        MobileModel mobileModel = new MobileModel();
         if (!Prefs.with(this).getPreLoad()) {
-            setRealmData();
+            mobileModel.setRealmDataModel(realm,this);
         }
 
-        // refresh the realm instance
         RealmController.with(this).refresh();
-        // get all persisted objects
-        // create the helper adapter and notify data set changes
-        // changes will be reflected automatically
-        setRealmAdapter(RealmController.with(this).getBooks());
-
-        Toast.makeText(this, "Press card item for edit, long press to remove item", Toast.LENGTH_LONG).show();
+        setRealmAdapter(RealmController.with(this).getMobiles());
 
         //add new item
         fab.setOnClickListener(new View.OnClickListener() {
@@ -70,36 +62,45 @@ public class MainActivity extends AppCompatActivity {
 
                 inflater = MainActivity.this.getLayoutInflater();
                 View content = inflater.inflate(R.layout.edit_item, null);
-                final EditText editTitle = (EditText) content.findViewById(R.id.title);
-                final EditText editAuthor = (EditText) content.findViewById(R.id.author);
-                final EditText editThumbnail = (EditText) content.findViewById(R.id.thumbnail);
+                final EditText edttxt_name = (EditText) content.findViewById(R.id.edttxt_name);
+                final EditText edttxt_model = (EditText) content.findViewById(R.id.edttxt_model);
+                final EditText edttxt_color = (EditText) content.findViewById(R.id.edttxt_color);
+                final EditText edttxt_cost = (EditText) content.findViewById(R.id.edttxt_cost);
+                final EditText edttxt_battery = (EditText) content.findViewById(R.id.edttxt_battery);
+                final EditText edttxt_primary_cam = (EditText) content.findViewById(R.id.edttxt_primary_cam);
+                final EditText edttxt_secondary_cam = (EditText) content.findViewById(R.id.edttxt_secondary_cam);
+                final EditText edttxt_memory = (EditText) content.findViewById(R.id.edttxt_memory);
+
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setView(content)
-                        .setTitle("Add book")
+                        .setTitle("Add Mobile")
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                Book book = new Book();
-                                //book.setId(RealmController.getInstance().getBooks().size() + 1);
-                                book.setId(RealmController.getInstance().getBooks().size() + System.currentTimeMillis());
-                                book.setTitle(editTitle.getText().toString());
-                                book.setAuthor(editAuthor.getText().toString());
-                                book.setImageUrl(editThumbnail.getText().toString());
+                                Mobiles mobiles = new Mobiles();
+                                mobiles.setId(RealmController.getInstance().getMobiles().size() + System.currentTimeMillis());
+                                mobiles.setName(edttxt_name.getText().toString());
+                                mobiles.setModel(edttxt_model.getText().toString());
+                                mobiles.setColor(edttxt_color.getText().toString());
+                                mobiles.setPrice(edttxt_cost.getText().toString());
+                                mobiles.setBattery(edttxt_battery.getText().toString());
+                                mobiles.setPrimary_camera(edttxt_primary_cam.getText().toString());
+                                mobiles.setSecondry_camera(edttxt_secondary_cam.getText().toString());
+                                mobiles.setMemory(edttxt_memory.getText().toString());
 
-                                if (editTitle.getText() == null || editTitle.getText().toString().equals("") || editTitle.getText().toString().equals(" ")) {
-                                    Toast.makeText(MainActivity.this, "Entry not saved, missing title", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    // Persist your data easily
+                                if(edttxt_name.getText().length()==0||edttxt_model.getText().length()==0||edttxt_color.getText().length()==0||edttxt_cost.getText().length()==0||edttxt_battery.getText().length()==0
+                                        ||edttxt_primary_cam.getText().length()==0||edttxt_memory.getText().length()==0){
+
+                                    Toast.makeText(MainActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
                                     realm.beginTransaction();
-                                    realm.copyToRealm(book);
+                                    realm.copyToRealm(mobiles);
                                     realm.commitTransaction();
-
                                     adapter.notifyDataSetChanged();
-
-                                    // scroll the recycler view to bottom
-                                    recycler.scrollToPosition(RealmController.getInstance().getBooks().size() - 1);
+                                    recycler.scrollToPosition(RealmController.getInstance().getMobiles().size()-1);
                                 }
                             }
                         })
@@ -116,77 +117,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void setRealmAdapter(RealmResults<Book> books) {
+    public void setRealmAdapter(RealmResults<Mobiles> mobilesRealmResults) {
 
-        RealmBooksAdapter realmAdapter = new RealmBooksAdapter(this.getApplicationContext(), books, true);
-        // Set the data and tell the RecyclerView to draw
+        RealmBooksAdapter realmAdapter = new RealmBooksAdapter(this.getApplicationContext(), mobilesRealmResults, true);
         adapter.setRealmAdapter(realmAdapter);
         adapter.notifyDataSetChanged();
     }
 
     private void setupRecycler() {
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         recycler.setHasFixedSize(true);
-
-        // use a linear layout manager since the cards are vertically scrollable
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recycler.setLayoutManager(layoutManager);
-
-        // create an empty adapter and add it to the recycler view
-        adapter = new BooksAdapter(this);
+        adapter = new MobileAdapter(this);
         recycler.setAdapter(adapter);
     }
 
-    private void setRealmData() {
 
-        ArrayList<Book> books = new ArrayList<>();
-
-        Book book = new Book();
-        book.setId(1 + System.currentTimeMillis());
-        book.setAuthor("Reto Meier");
-        book.setTitle("Android 4 Application Development");
-        book.setImageUrl("http://api.androidhive.info/images/realm/1.png");
-        books.add(book);
-
-        book = new Book();
-        book.setId(2 + System.currentTimeMillis());
-        book.setAuthor("Itzik Ben-Gan");
-        book.setTitle("Microsoft SQL Server 2012 T-SQL Fundamentals");
-        book.setImageUrl("http://api.androidhive.info/images/realm/2.png");
-        books.add(book);
-
-        book = new Book();
-        book.setId(3 + System.currentTimeMillis());
-        book.setAuthor("Magnus Lie Hetland");
-        book.setTitle("Beginning Python: From Novice To Professional Paperback");
-        book.setImageUrl("http://api.androidhive.info/images/realm/3.png");
-        books.add(book);
-
-        book = new Book();
-        book.setId(4 + System.currentTimeMillis());
-        book.setAuthor("Chad Fowler");
-        book.setTitle("The Passionate Programmer: Creating a Remarkable Career in Software Development");
-        book.setImageUrl("http://api.androidhive.info/images/realm/4.png");
-        books.add(book);
-
-        book = new Book();
-        book.setId(5 + System.currentTimeMillis());
-        book.setAuthor("Yashavant Kanetkar");
-        book.setTitle("Written Test Questions In C Programming");
-        book.setImageUrl("http://api.androidhive.info/images/realm/5.png");
-        books.add(book);
-
-
-        for (Book b : books) {
-            // Persist your data easily
-            realm.beginTransaction();
-            realm.copyToRealm(b);
-            realm.commitTransaction();
-        }
-
-        Prefs.with(this).setPreLoad(true);
-
-    }
 }

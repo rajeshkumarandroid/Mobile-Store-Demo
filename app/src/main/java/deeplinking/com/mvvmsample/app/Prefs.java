@@ -4,6 +4,11 @@ package deeplinking.com.mvvmsample.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * Created by Rajesh Kumar on 07-06-2018.
+ */
+
+
 public class Prefs {
 
     private static final String PRE_LOAD = "preLoad";
