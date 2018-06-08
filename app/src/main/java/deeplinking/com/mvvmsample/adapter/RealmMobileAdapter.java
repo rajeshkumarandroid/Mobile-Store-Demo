@@ -10,9 +10,9 @@ import io.realm.RealmResults;
  */
 
 
-public class RealmBooksAdapter extends RealmModelAdapter<Mobiles> {
+public class RealmMobileAdapter extends RealmModelAdapter<Mobiles> {
 
-    public RealmBooksAdapter(Context context, RealmResults<Mobiles> realmResults, boolean automaticUpdate) {
+    public RealmMobileAdapter(Context context, RealmResults<Mobiles> realmResults, boolean automaticUpdate) {
 
         super(context, realmResults, automaticUpdate);
     }

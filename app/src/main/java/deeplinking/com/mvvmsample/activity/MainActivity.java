@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import deeplinking.com.mvvmsample.R;
 import deeplinking.com.mvvmsample.adapter.MobileAdapter;
-import deeplinking.com.mvvmsample.adapter.RealmBooksAdapter;
+import deeplinking.com.mvvmsample.adapter.RealmMobileAdapter;
 import deeplinking.com.mvvmsample.app.Prefs;
 import deeplinking.com.mvvmsample.model.Mobiles;
 import deeplinking.com.mvvmsample.realm.RealmController;
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setRealmAdapter(RealmResults<Mobiles> mobilesRealmResults) {
 
-        RealmBooksAdapter realmAdapter = new RealmBooksAdapter(this.getApplicationContext(), mobilesRealmResults, true);
+        RealmMobileAdapter realmAdapter = new RealmMobileAdapter(this.getApplicationContext(), mobilesRealmResults, true);
         adapter.setRealmAdapter(realmAdapter);
         adapter.notifyDataSetChanged();
     }
